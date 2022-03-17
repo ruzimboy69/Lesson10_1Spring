@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,5 +44,31 @@ public class RoomService {
     public Page<Room> getRooms(int page, Integer hotelId) {
         Pageable pageable= PageRequest.of(page,2);
         return roomRepository.findAllByHotel_Id(hotelId,pageable);
+    }
+
+    public ApiResponse editById(RoomDto roomDto, Integer id) {
+        boolean b = roomRepository.existsById(id);
+        if(!b){
+            return new ApiResponse("fail",false);
+        }
+        Optional<Room> byId = roomRepository.findById(id);
+        Room room1 = byId.get();
+        room1.setRoomNumber(roomDto.getRoomNumber());
+        room1.setSize(roomDto.getSize());
+        room1.setFloorNumber(roomDto.getFloorNumber());
+        Optional<Hotel> byName = hotelRepository.findByName(roomDto.getHotelName());
+        Hotel hotel = byName.get();
+        room1.setHotel(hotel);
+        Room save = roomRepository.save(room1);
+        return new ApiResponse("success",true);
+    }
+    public  ApiResponse deleteById(Integer id){
+        boolean b = roomRepository.existsById(id);
+        if(!b){
+            return new ApiResponse("fail",false);
+        }
+        roomRepository.deleteById(id);
+        return new ApiResponse("deleted",true);
+
     }
 }

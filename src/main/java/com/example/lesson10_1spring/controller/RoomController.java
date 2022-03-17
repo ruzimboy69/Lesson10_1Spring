@@ -43,6 +43,14 @@ public class RoomController {
     public Page<Room> getPageable(@RequestParam int page,@PathVariable Integer hotelId){
         return roomService.getRooms(page,hotelId);
     }
+    @PutMapping("/{id}")
+    public ApiResponse edit(@PathVariable Integer id,@RequestBody RoomDto roomDto){
+        return roomService.editById(roomDto,id);
+    }
+    @DeleteMapping("/{id}")
+    public ApiResponse delete(@PathVariable Integer id){
+        return roomService.deleteById(id);
+    }
 //    @GetMapping("/byHotelId/{id}")
 //    public ApiResponse getByHotelId(@PathVariable Integer id){
 //        List<Room> allByHotel_id = roomRepository.findAllByHotel_Id(id);
